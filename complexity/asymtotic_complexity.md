@@ -5,7 +5,7 @@ The asymptotic behaviour of a function `f(n)` refers to the behaviour (growth) o
 
 ## Big O notation(big omega, big theta)
 
-In order to check which algorithm is better it is not enough to measure the time. There are several reasons for that - different machines will record different time and furthermore for fast algorithms speed measurements may not be precise enough. Instead we look at the number of simple operations the computer has to perform.
+In order to check which algorithm(operation) is better it is not enough to measure the time. There are several reasons for that - different machines will record different time and furthermore for fast algorithms speed measurements may not be precise enough. Instead we look at the number of simple operations the computer has to perform.
 
 ### Formal definitions
 
