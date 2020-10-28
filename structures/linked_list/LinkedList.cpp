@@ -41,6 +41,19 @@ int main(){
 
   // ll2 = ll;
   // ll2.print();
-  LinkedList<int> llInit = { 1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10 };
+  LinkedList<int> llInit = { 1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 18, 30 };
+  LinkedList<int> list2 = { 1, 2, 3, 4, 5, 25, 30};
+
+  std::cout << "===============================================\n";
+  std::cout << "l1: ";
+  llInit.print();
+
+  std::cout << "l2: ";
+  list2.print();
+
+  LinkedList<int> res = LinkedList<int>::intersectSortedLists(llInit, list2);
+
+  std::cout << "Intersection : ";
+  res.print();
   return 0;
 }
