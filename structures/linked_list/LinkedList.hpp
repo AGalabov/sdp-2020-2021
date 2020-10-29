@@ -223,61 +223,72 @@ void LinkedList<T>::erase(size_t pos)
         throw std::out_of_range("Invalid position");
     }
 
-    if(pos == 0)
-    {
-        delete first;
-        last = first = nullptr;
-        numberOfElements = 0;
-        return;
-    }
-
-    int elementsPassed = 0;
-    box* it = first;
+    size_t elementsPassed = 0;
+    box* destroyer = first;
+    box* prev = nullptr;
     while(elementsPassed < pos){
-        it = it->next;
+        prev = destroyer;
+        destroyer = destroyer->next;
         elementsPassed++;
     }
 
-    if(numberOfElements - 1 == pos)
+    if(pos == 0)
     {
-        delete last;
-        last = it;
+        if(numberOfElements == 1)
+        {
+            delete first;
+            last = first = nullptr;
+            numberOfElements--;
+            return;
+        }
+
+        first = destroyer->next;
+        delete destroyer;
+        numberOfElements--;
+        return;  
+    }
+
+    if(pos == numberOfElements - 1)
+    {
+        prev->next = nullptr;
+        last = prev;
+        delete destroyer;
         numberOfElements--;
         return;
     }
 
-    box* toDel = it->next;
-    it->next = it->next->next;
-    delete toDel;
+    prev->next = destroyer->next;
+    delete destroyer;
     numberOfElements--;
 }
 
 template<class T>
 LinkedList<T> LinkedList<T>::intersectSortedLists(const LinkedList<T>& list1, const LinkedList<T>& list2)
 {
-    LinkedList intersection;
-    box* list1Head = list1.first, list2Head = list2.head;
+    LinkedList<T> intersection;
+    box* list1Head = list1.first;
+    box* list2Head = list2.first;
     while(list1Head && list2Head)
     {
-        if(list1Head == list2Head)
+        if(list1Head->data == list2Head -> data)
         {
-            intersection.pushBack(list1Head->val);
+            intersection.pushBack(list1Head->data);
             box* curr = list1Head;
             
-            while(list1Head->val == curr->val)
+            while(list1Head->data == curr->data && list1Head->next)
             {
                 list1Head = list1Head->next;
             }
 
-            while(list2Head->val == curr->val)
+            while(list2Head->data == curr->data && list2Head->next)
             {
                 list2Head = list2Head->next;
             }
             continue;
         }
-        if(list1Head->val < list2Head->val)
+        if(list1Head->data < list2Head->data)
         {
-            list1Head = list1Head->val;
+            list1Head = list1Head->next;
             continue;
         }
 
