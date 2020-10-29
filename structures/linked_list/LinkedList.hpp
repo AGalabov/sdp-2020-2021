@@ -1,5 +1,5 @@
 #ifndef _LINKED_LIST
-#define _LINKED_LIST
+#define _LINKED_LIST//
 
 #include <iostream>
 #include<stdexcept>
@@ -37,6 +37,24 @@ public:
     void erase(size_t pos); // - изтрива елемента на позиция pos
 
     static LinkedList intersectSortedLists(const LinkedList& list1, const LinkedList& list2);
+    
+    class Iterator
+    {
+        public:
+        Iterator(box*);
+
+        bool hasNext() const;
+        bool reachedEnd() const;
+        T& operator *();
+        Iterator& operator ++();
+		bool operator!=(const Iterator &other) const;
+
+	private:
+        box *curr;
+    };
+
+	Iterator begin() const;
+	Iterator end() const;
 };
 //#include "LinkedList.cpp"
 
@@ -296,6 +314,61 @@ LinkedList<T> LinkedList<T>::intersectSortedLists(const LinkedList<T>& list1, co
     }
 
     return intersection;
+}
+
+template<class T>
+LinkedList<T>::Iterator::Iterator(box* elem): curr(elem)
+{
+ /* */
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::hasNext() const
+{
+	return curr->next != nullptr;
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::reachedEnd() const
+{
+	return curr == nullptr;
+}
+
+template<class T>
+T& LinkedList<T>::Iterator::operator *()
+{
+    if(curr == nullptr)
+		throw std::out_of_range("Out of range!\n");
+
+	return curr->data;
+}
+
+template<class T>
+typename LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator ++()
+{
+	if(curr == nullptr)
+		throw std::out_of_range("Out of range !\n");
+
+	curr = curr->next;
+	return *this;
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::operator!=(const Iterator &other) const
+{
+	return curr != other.curr;
+}
+
+template<class T>
+typename LinkedList<T>::Iterator LinkedList<T>::begin() const
+{
+	return LinkedList<T>::Iterator{this->first};
+}
+
+template<class T>
+typename LinkedList<T>::Iterator LinkedList<T>::end() const
+{
+    return LinkedList<T>::Iterator{nullptr};
 }
 
 #endif

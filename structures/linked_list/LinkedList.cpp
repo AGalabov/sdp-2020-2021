@@ -90,12 +90,20 @@ int main(){
 
   LinkedList<int>::intersectSortedLists(sortedList1, sortedList2).print();
 
-   sortedList2.pushBack(3);
-   sortedList2.pushBack(5);
-   sortedList2.pushBack(5);
-   LinkedList<int>::intersectSortedLists(sortedList1, sortedList2).print();
+  sortedList2.pushBack(3);
+  sortedList2.pushBack(5);
+  sortedList2.pushBack(5);
+  LinkedList<int>::intersectSortedLists(sortedList1, sortedList2).print();
 
-   LinkedList<int> sortedList3 = {0, 1, 5, 7, 8, 11};
-   LinkedList<int>::intersectSortedLists(sortedList1, sortedList3).print();
+  LinkedList<int> sortedList3 = {0, 1, 5, 7, 8, 11};
+  LinkedList<int>::intersectSortedLists(sortedList1, sortedList3).print();
+
+
+  std::cout<<"------ Iterator testing --- " <<std::endl;
+  for(LinkedList<int>::Iterator it = sortedList1.begin(); it != sortedList1.end(); ++it)
+  {
+    std::cout << *it << " ";
+  }
+  std::cout << std::endl;
   return 0;
 }
