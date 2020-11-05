@@ -1,5 +1,5 @@
 #ifndef _LINKED_LIST
-#define _LINKED_LIST
+#define _LINKED_LIST//
 
 #include <iostream>
 #include<stdexcept>
@@ -37,6 +37,24 @@ public:
     void erase(size_t pos); // - изтрива елемента на позиция pos
 
     static LinkedList intersectSortedLists(const LinkedList& list1, const LinkedList& list2);
+    
+    class Iterator
+    {
+        public:
+        Iterator(box*);
+
+        bool hasNext() const;
+        bool reachedEnd() const;
+        T& operator *();
+        Iterator& operator ++();
+		bool operator!=(const Iterator &other) const;
+
+	private:
+        box *curr;
+    };
+
+	Iterator begin() const;
+	Iterator end() const;
 };
 //#include "LinkedList.cpp"
 
@@ -223,32 +241,42 @@ void LinkedList<T>::erase(size_t pos)
         throw std::out_of_range("Invalid position");
     }
 
-    if(pos == 0)
-    {
-        delete first;
-        last = first = nullptr;
-        numberOfElements = 0;
-        return;
-    }
-
-    int elementsPassed = 0;
-    box* it = first;
+    size_t elementsPassed = 0;
+    box* destroyer = first;
+    box* prev = nullptr;
     while(elementsPassed < pos){
-        it = it->next;
+        prev = destroyer;
+        destroyer = destroyer->next;
         elementsPassed++;
     }
 
-    if(numberOfElements - 1 == pos)
+    if(pos == 0)
     {
-        delete last;
-        last = it;
+        if(numberOfElements == 1)
+        {
+            delete first;
+            last = first = nullptr;
+            numberOfElements--;
+            return;
+        }
+
+        first = destroyer->next;
+        delete destroyer;
+        numberOfElements--;
+        return;  
+    }
+
+    if(pos == numberOfElements - 1)
+    {
+        prev->next = nullptr;
+        last = prev;
+        delete destroyer;
         numberOfElements--;
         return;
     }
 
-    box* toDel = it->next;
-    it->next = it->next->next;
-    delete toDel;
+    prev->next = destroyer->next;
+    delete destroyer;
     numberOfElements--;
 }
 
@@ -260,17 +288,17 @@ LinkedList<T> LinkedList<T>::intersectSortedLists(const LinkedList<T>& list1, co
     box* list2Head = list2.first;
     while(list1Head && list2Head)
     {
-        if(list1Head->data == list2Head->data)
+        if(list1Head->data == list2Head -> data)
         {
             intersection.pushBack(list1Head->data);
             box* curr = list1Head;
             
-            while(list1Head->data == curr->data)
+            while(list1Head->data == curr->data && list1Head->next)
             {
                 list1Head = list1Head->next;
             }
 
-            while(list2Head->data == curr->data)
+            while(list2Head->data == curr->data && list2Head->next)
             {
                 list2Head = list2Head->next;
             }
@@ -287,6 +315,61 @@ LinkedList<T> LinkedList<T>::intersectSortedLists(const LinkedList<T>& list1, co
 
     intersection.print();
     return intersection;
+}
+
+template<class T>
+LinkedList<T>::Iterator::Iterator(box* elem): curr(elem)
+{
+ /* */
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::hasNext() const
+{
+	return curr->next != nullptr;
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::reachedEnd() const
+{
+	return curr == nullptr;
+}
+
+template<class T>
+T& LinkedList<T>::Iterator::operator *()
+{
+    if(curr == nullptr)
+		throw std::out_of_range("Out of range!\n");
+
+	return curr->data;
+}
+
+template<class T>
+typename LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator ++()
+{
+	if(curr == nullptr)
+		throw std::out_of_range("Out of range !\n");
+
+	curr = curr->next;
+	return *this;
+}
+
+template<class T>
+bool LinkedList<T>::Iterator::operator!=(const Iterator &other) const
+{
+	return curr != other.curr;
+}
+
+template<class T>
+typename LinkedList<T>::Iterator LinkedList<T>::begin() const
+{
+	return LinkedList<T>::Iterator{this->first};
+}
+
+template<class T>
+typename LinkedList<T>::Iterator LinkedList<T>::end() const
+{
+    return LinkedList<T>::Iterator{nullptr};
 }
 
 #endif
