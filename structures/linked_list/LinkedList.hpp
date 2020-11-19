@@ -37,6 +37,10 @@ public:
     void erase(size_t pos); // - изтрива елемента на позиция pos
 
     static LinkedList intersectSortedLists(const LinkedList& list1, const LinkedList& list2);
+
+    void oddEvenList();
+
+    static LinkedList addTwoNumbers(const LinkedList&, const LinkedList&);
     
     class Iterator
     {
@@ -116,7 +120,7 @@ template <class T>
 void LinkedList<T>::copy(const LinkedList<T> &other)
 {
     box *current = other.first;
-    while (!current)
+    while (current)
     {
         this->pushBack(current->data);
         current = current->next;
@@ -371,5 +375,108 @@ typename LinkedList<T>::Iterator LinkedList<T>::end() const
 {
     return LinkedList<T>::Iterator{nullptr};
 }
+
+
+template<typename T>
+void LinkedList<T>::oddEvenList() {
+    box* headElement = this->first;
+
+    box* odd = nullptr;
+    box* oddHead = nullptr;
+    box* even = nullptr;
+    box* evenHead = nullptr;
+    box* curr = nullptr;
+        
+    bool oddFlag = true;
+    while(headElement != nullptr){
+        curr = headElement;
+        headElement = headElement -> next;
+        curr -> next = nullptr;
+            
+        if(oddFlag){
+            if(oddHead == nullptr){
+                oddHead = curr;
+                odd = curr;
+                oddFlag = !oddFlag;
+                continue;
+            }
+            odd -> next = curr;
+            odd = odd -> next;
+        }
+        else{
+            if(evenHead == nullptr){
+                evenHead = curr;
+                even = curr;
+                oddFlag = !oddFlag;
+                continue;
+            }
+            even -> next = curr;
+            even = even -> next;
+        }
+        oddFlag = !oddFlag;   
+    }
+        
+    if(odd)
+        odd -> next = evenHead;
+    
+    this-> first = oddHead; 
+}
+
+
+template<typename T>
+LinkedList<T> LinkedList<T>::addTwoNumbers(const LinkedList<T>& summand1, const LinkedList<T>& summand2){
+    if (summand1.size() == 0 && summand2.size() == 0)
+    {
+        return LinkedList<T>();
+    }
+
+    LinkedList<T> result;
+    LinkedList<T>::Iterator l1 = summand1.begin();
+    LinkedList<T>::Iterator l2 = summand2.begin();
+    T add = 0;
+    T el1 = 0;
+    T el2 = 0;
+
+    while (l1 != summand1.end() || l2 != summand2.end())
+    {
+        if (l1.reachedEnd())
+        {
+            el1 = 0;
+            el2 = *l2;
+            ++l2;
+        }
+        else if (l2.reachedEnd())
+        {
+            el1 = *l1;
+            el2 = 0;
+            ++l1;
+        }
+        else
+        {
+            el1 = *l1;
+            el2 = *l2;
+            ++l1;
+            ++l2;
+        }
+
+        if (el1 + el2 + add < 10)
+        {
+            result.pushBack(el1 + el2 + add);
+            add = 0;
+        }
+        else
+        {
+            result.pushBack((el1 + el2 + add) % 10);
+            add = 1;
+        }       
+    }
+
+    if (add == 1){
+        result.pushBack(1);
+    }
+
+    return result;
+}
+
 
 #endif
